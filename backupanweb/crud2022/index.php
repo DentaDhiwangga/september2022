@@ -1,9 +1,9 @@
 <?php
 // koneksi database
 $server = "localhost";
-$user = "root";
-$password = "";
-$database = "dbcrud2022";
+$user = "id19497190_root";
+$password = "CnJT85u>v!!z{YSu";
+$database = "id19497190_sesi23";
 
 // buat koneksi
 $koneksi = mysqli_connect($server, $user, $password, $database) or die(mysqli_error($koneksi));
@@ -136,7 +136,14 @@ if (isset($_GET['hal'])) {
     }
   }
 }
+
+
+
 ?>
+
+
+
+
 
 <!doctype html>
 <html lang="en">
@@ -146,45 +153,46 @@ if (isset($_GET['hal'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Data Guru</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-
-  <!-- navigasi -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="#">SMK Penerbangan Angkasa</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse text-right" id="navbarText">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/PKL/september2022/web%20sekolah/crud2022/login.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/PKL/september2022/web sekolah/mapel/index.php">Mapel</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/PKL/september2022/web sekolah/crud2022/index.php">Data Guru</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="/PKL/september2022/web%20sekolah/crud2022/absen.php">Absen Siswa</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/PKL/september2022/web%20sekolah/index.html">Logout</a>
-          </li>
-        </ul>
+    
+    <!-- navigasi -->
+<nav
+      class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg fixed-top"
+    >
+      <div class="container">
+        <a class="navbar-brand" href="#">SMK Penerbangan Angkasa</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarText"
+          aria-controls="navbarText"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse text-right" id="navbarText">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="/websekolah">Home</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
-  <br>
-  <br>
-  <br>
+    </nav>
 
+<br>
+<br>
+<br>
+    
+    
   <!-- awal container -->
   <div class="container">
+
     <!-- awal row -->
     <div class="row">
       <!-- awal col -->
@@ -214,7 +222,7 @@ if (isset($_GET['hal'])) {
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Jenis kelamin</label>
+                <label class="form-label">Jenis Kelamin</label>
                 <select class="form-select" name="tasal">
                   <option value="<?= $vasal ?>"><?= $vasal ?></option>
                   <option value="Laki-Laki">Laki-Laki</option>
@@ -234,18 +242,14 @@ if (isset($_GET['hal'])) {
                 <div class="col">
                   <div class="mb-3">
                     <label class="form-label">Bidang</label>
-                    <select name="tbidang" class="form-control">
-                      <?php
-                      $sql = 'SELECT * FROM `tmapel`';
-                      $query = mysqli_query($koneksi, $sql);
-                      while ($obj = mysqli_fetch_object($query)) {
-                        // print_r($obj);die();
-                      ?>
-                        <option value="<?= $obj->id ?>"><?= $obj->nama_mapel ?></option>
-                      <?php
-
-                      }
-                      ?>
+                    <select class="form-select" name="tbidang">
+                      <option value="<?= $vbidang ?>"><?= $vbidang ?></option>
+                      <option value="Airframe Power Plant">Airframe Power Plant</option>
+                      <option value="Aircraft Machining">Aircraft Machining</option>
+                      <option value="Aircraft Sheet Metal Forming">Aircraft Sheet Metal Forming</option>
+                      <option value="Airframe Mechanic">Airframe Mechanic</option>
+                      <option value="Aircraft Electricity">Aircraft Electricity</option>
+                      <option value="Aviation Electronics">Aviation Electronics</option>
                     </select>
                   </div>
                 </div>
@@ -317,7 +321,7 @@ if (isset($_GET['hal'])) {
             $q = "SELECT  * FROM tguru WHERE kode like '%$keyword%' or nama like '%$keyword%'  or asal like '%$keyword%' order by
                             id_guru desc ";
           } else {
-            $q = "SELECT tguru.* , tmapel.nama_mapel FROM tguru LEFT JOIN tmapel ON tguru.bidang = tmapel.id order by id_guru desc";
+            $q = "SELECT * FROM tguru order by id_guru desc";
           }
 
           $tampil = mysqli_query($koneksi, $q);
@@ -331,7 +335,7 @@ if (isset($_GET['hal'])) {
               <td><?= $data['alamat'] ?></td>
               <td><?= $data['asal'] ?></td>
               <td><?= $data['usia'] ?></td>
-              <td><?= $data['nama_mapel'] ?? 'Mapel Belum Terdaftar' ?></td>
+              <td><?= $data['bidang'] ?></td>
               <td><?= $data['tanggal_lahir'] ?></td>
               <td>
                 <a href="index.php?hal=edit&id=<?= $data['id_guru'] ?>" class="btn btn-warning">Edit</a>
@@ -343,23 +347,21 @@ if (isset($_GET['hal'])) {
           <?php endwhile; ?>
 
         </table>
+
       </div>
       <div class="card-footer bg-dark">
 
       </div>
     </div>
     <!-- akhir card -->
+    <br>
+
 
   </div>
   <!-- akhir container -->
-  <br>
-  <!-- kaki -->
-  <div class="container-fluid kaki pt-3 pb-3 bg-dark">
-    <div class="container">
-      <a href="https://api.whatsapp.com/send?phone=6288989637712&text=Halo%20Admin%20Saya%20Mau%20Bertanya" <h5 class="text">All Rights Reserved @dentadhiwangga &copy; 2022</h5>
-    </div>
-  </div>
-  <!-- kaki -->
+
+
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 </body>
 

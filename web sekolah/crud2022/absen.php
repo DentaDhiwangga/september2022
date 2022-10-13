@@ -37,15 +37,14 @@ if (isset($_POST['bsimpan'])) {
   // pengujian apakah data akan diedit atau disimpan baru
   if (isset($_GET['hal']) == "edit") {
     // data akan diedit
-    $edit = mysqli_query($koneksi, "UPDATE tguru SET
-                                               kode = '$_POST[tkode]',
-                                               nama = '$_POST[tnama]',
+    $edit = mysqli_query($koneksi, "UPDATE tsiswa SET
+                                               nama_siswa = '$_POST[tnama_siswa]',
                                                alamat = '$_POST[talamat]',
-                                               asal = '$_POST[tasal]',
+                                               jeniskelamin = '$_POST[tjeniskelamin]',
                                                usia = '$_POST[tusia]',
-                                               bidang = '$_POST[tbidang]',
-                                               tanggal_lahir = '$_POST[ttanggal_lahir]'
-                                        WHERE id_guru = '$_GET[id]'       
+                                               walikelas = '$_POST[twalikelas]',
+                                               tanggalmengisi = '$_POST[ttanggalmengisi]'
+                                        WHERE id_siswa = '$_GET[id]'       
 ");
 
 
@@ -53,48 +52,47 @@ if (isset($_POST['bsimpan'])) {
     if ($edit) {
       echo "<script>
            alert('edit data Sukses!');
-           document.location='index.php';
+           document.location='absen.php';
         </script>";
     } else {
       echo "<script>
             alert('edit data Gagal!');
-             document.location='index.php';
+             document.location='absen.php';
          </script>";
     }
   } else {
     // data akan disimpan baru
-    $simpan = mysqli_query($koneksi, " INSERT INTO tguru (kode, nama, alamat, asal, usia, bidang, tanggal_lahir)
-                                        VALUE ( '$_POST[tkode]',
-                                                '$_POST[tnama]',
+    $simpan = mysqli_query($koneksi, " INSERT INTO tsiswa (nama_siswa, alamat, jeniskelamin, usia, walikelas, tanggalmengisi)
+                                        VALUE ( '$_POST[tnama_siswa]',
                                                 '$_POST[talamat]',
-                                                '$_POST[tasal]',
+                                                '$_POST[tjeniskelamin]',
                                                 '$_POST[tusia]',
-                                                '$_POST[tbidang]',
-                                                '$_POST[ttanggal_lahir]' )
+                                                '$_POST[twalikelas]',
+                                                '$_POST[ttanggalmengisi]' )
                                                 ");
+                                                
     //uji jika simpan data sukses
     if ($simpan) {
       echo "<script>
                 alert('Simpan data Sukses!');
-                document.location='index.php';
+                document.location='absen.php';
                 </script>";
     } else {
       echo "<script>
                 alert('Simpan data Gagal!');
-                document.location='index.php';
+                document.location='absen.php';
                 </script>";
     }
   }
 }
 
 // deklarasi variabel untuk menampung data yang akan diedit
-$vkode = "";
-$vnama = "";
+$vnama_siswa = "";
 $valamat = "";
-$vasal = "";
+$vjeniskelamin = "";
 $vusia = "";
-$vbidang = "";
-$vtanggal_lahir = "";
+$vwalikelas = "";
+$vtanggalmengisi = "";
 
 
 
@@ -107,35 +105,44 @@ if (isset($_GET['hal'])) {
   if ($_GET['hal'] == "edit") {
 
     // tampilkan data yang akan diedit
-    $tampil = mysqli_query($koneksi, "SELECT * FROM tguru WHERE id_guru = '$_GET[id]' ");
+    $tampil = mysqli_query($koneksi, "SELECT * FROM tsiswa WHERE id_siswa = '$_GET[id]' ");
     $data = mysqli_fetch_array($tampil);
     if ($data) {
       // jika data ditemukan maka, data ditampung ke dalam divariabel
-      $vkode = $data['kode'];
-      $vnama = $data['nama'];
+      $vnama_siswa = $data['nama_siswa'];
       $valamat = $data['alamat'];
-      $vasal = $data['asal'];
+      $vjeniskelamin = $data['jeniskelamin'];
       $vusia = $data['usia'];
-      $vbidang = $data['bidang'];
-      $vtanggal_lahir = $data['tanggal_lahir'];
+      $vwalikelas = $data['walikelas'];
+      $vtanggalmengisi = $data['tanggalmengisi'];
     }
   } else if ($_GET['hal'] == "hapus") {
     // persiapan hapus data
-    $hapus = mysqli_query($koneksi, "DELETE FROM tguru WHERE id_guru = '$_GET[id]' ");
+    $hapus = mysqli_query($koneksi, "DELETE FROM tsiswa WHERE id_siswa = '$_GET[id]' ");
     //uji jika hapus data sukses
     if ($hapus) {
       echo "<script>
             alert('Hapus data Sukses!');
-            document.location='index.php';
+            document.location='absen.php';
             </script>";
     } else {
       echo "<script>
             alert('Hapus data Gagal!');
-            document.location='index.php';
+            document.location='absen.php';
             </script>";
     }
   }
 }
+if (isset($_POST['bcari'])) {
+  // tampilkan data yang dicari
+  $keyword = $_POST['tcari'];
+  $q = "SELECT  * FROM tsiswa WHERE nama_siswa like '%$keyword%' or alamat like '%$keyword%'  or jeniskelamin like '%$keyword%' order by
+                  id_siswa desc ";
+} else {
+  $q = "SELECT tsiswa.* , tguru.nama FROM tsiswa LEFT JOIN tguru ON tsiswa.walikelas = tguru.id_guru order by id_siswa desc";
+}
+$tampil = mysqli_query($koneksi, $q);
+
 ?>
 
 <!doctype html>
@@ -144,7 +151,7 @@ if (isset($_GET['hal'])) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Data Guru</title>
+  <title>Data Siswa</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -192,20 +199,15 @@ if (isset($_GET['hal'])) {
         <!-- awal card -->
         <div class="card">
           <div class="card-header bg-dark text-light">
-            Form Input Data Guru
+            Form Absen Siswa
           </div>
           <div class="card-body">
             <!-- awal form -->
             <form method="POST">
 
               <div class="mb-3">
-                <label class="form-label">Kode Guru</label>
-                <input type="text" name="tkode" value="<?= $vkode ?>" class="form-control" placeholder="Masukan Kode Guru">
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label">Nama Guru</label>
-                <input type="text" name="tnama" value="<?= $vnama ?>" class="form-control" placeholder="Masukan Nama Guru">
+                <label class="form-label">Nama Siswa</label>
+                <input type="text" name="tnama_siswa" value="<?= $vnama_siswa ?>" class="form-control" placeholder="Masukan Nama Anda">
               </div>
 
               <div class="mb-3">
@@ -215,10 +217,10 @@ if (isset($_GET['hal'])) {
 
               <div class="mb-3">
                 <label class="form-label">Jenis kelamin</label>
-                <select class="form-select" name="tasal">
-                  <option value="<?= $vasal ?>"><?= $vasal ?></option>
-                  <option value="Laki-Laki">Laki-Laki</option>
-                  <option value="Perempuan">Perempuan</option>
+                <select class="form-select" name="tjeniskelamin">
+                  <option value="">Pilih Jenis Kelamin</option>
+                  <option value="Laki-Laki" <?php if($vjeniskelamin == 'Laki-Laki'){echo 'selected';} ?>>Laki-Laki</option>
+                  <option value="Perempuan" <?php if($vjeniskelamin == 'Perempuan'){echo 'selected';} ?>>Perempuan</option>
 
                 </select>
               </div>
@@ -233,15 +235,15 @@ if (isset($_GET['hal'])) {
 
                 <div class="col">
                   <div class="mb-3">
-                    <label class="form-label">Bidang</label>
-                    <select name="tbidang" class="form-control">
+                    <label class="form-label">Wali Kelas</label>
+                    <select name="twalikelas" class="form-control">
                       <?php
-                      $sql = 'SELECT * FROM `tmapel`';
+                      $sql = 'SELECT * FROM `tguru`';
                       $query = mysqli_query($koneksi, $sql);
                       while ($obj = mysqli_fetch_object($query)) {
                         // print_r($obj);die();
                       ?>
-                        <option value="<?= $obj->id ?>"><?= $obj->nama_mapel ?></option>
+                        <option value="<?= $obj->id_guru ?>" <?= $vwalikelas == $obj->id_guru ? 'selected' : null;  ?>><?= $obj->nama ?></option>
                       <?php
 
                       }
@@ -253,7 +255,7 @@ if (isset($_GET['hal'])) {
                 <div class="col">
                   <div class="mb-3">
                     <label class="form-label">Tanggal Mengisi</label>
-                    <input type="date" name="ttanggal_lahir" value="<?= $vtanggal_lahir ?>" class="form-control" placeholder="Masukan Umur Anda">
+                    <input type="date" name="ttanggalmengisi" value="<?= $vtanggalmengisi ?>" class="form-control" placeholder="Masukan Umur Anda">
                   </div>
                 </div>
 
@@ -281,7 +283,7 @@ if (isset($_GET['hal'])) {
     <!-- awal card -->
     <div class="card mt-3">
       <div class="card-header bg-dark text-light">
-        Data Guru
+        Data Siswa
       </div>
       <div class="card-body">
         <div class="col-md-6 mx-auto">
@@ -297,12 +299,11 @@ if (isset($_GET['hal'])) {
         <table class="table table-striped table-hover table-bordered">
           <tr>
             <th>No.</th>
-            <th>Kode guru</th>
-            <th>Nama Guru</th>
+            <th>Nama Siswa</th>
             <th>Alamat</th>
             <th>Jenis kelamin</th>
             <th>Usia</th>
-            <th>Bidang</th>
+            <th>Wali Kelas</th>
             <th>Tanggal Mengisi</th>
             <th>Aksi</th>
           </tr>
@@ -311,32 +312,22 @@ if (isset($_GET['hal'])) {
           $no = 1;
           // untuk pencarian data
           // jika tombol cari diklik
-          if (isset($_POST['bcari'])) {
-            // tampilkan data yang dicari
-            $keyword = $_POST['tcari'];
-            $q = "SELECT  * FROM tguru WHERE kode like '%$keyword%' or nama like '%$keyword%'  or asal like '%$keyword%' order by
-                            id_guru desc ";
-          } else {
-            $q = "SELECT tguru.* , tmapel.nama_mapel FROM tguru LEFT JOIN tmapel ON tguru.bidang = tmapel.id order by id_guru desc";
-          }
 
-          $tampil = mysqli_query($koneksi, $q);
           while ($data = mysqli_fetch_array($tampil)) :
           ?>
 
             <tr>
               <td><?= $no++ ?></td>
-              <td><?= $data['kode'] ?></td>
-              <td><?= $data['nama'] ?></td>
+              <td><?= $data['nama_siswa'] ?></td>
               <td><?= $data['alamat'] ?></td>
-              <td><?= $data['asal'] ?></td>
+              <td><?= $data['jeniskelamin'] ?></td>
               <td><?= $data['usia'] ?></td>
-              <td><?= $data['nama_mapel'] ?? 'Mapel Belum Terdaftar' ?></td>
-              <td><?= $data['tanggal_lahir'] ?></td>
+              <td><?= $data['nama'] ?? 'Data Belum Terdaftar' ?></td>
+              <td><?= $data['tanggalmengisi'] ?></td>
               <td>
-                <a href="index.php?hal=edit&id=<?= $data['id_guru'] ?>" class="btn btn-warning">Edit</a>
+                <a href="absen.php?hal=edit&id=<?= $data['id_siswa'] ?>" class="btn btn-warning">Edit</a>
 
-                <a href="index.php?hal=hapus&id=<?= $data['id_guru'] ?>" class="btn btn-danger" onclick="return confirm('Apakah anda Yakin akan Hapus Data ini?')">Hapus</a>
+                <a href="absen.php?hal=hapus&id=<?= $data['id_siswa'] ?>" class="btn btn-danger" onclick="return confirm('Apakah anda Yakin akan Hapus Data ini?')">Hapus</a>
               </td>
             </tr>
 

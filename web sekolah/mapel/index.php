@@ -121,6 +121,9 @@ if (isset($_GET['hal'])) {
                         <a class="nav-link" href="/PKL/september2022/web sekolah/crud2022/index.php">Data Guru</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/PKL/september2022/web%20sekolah/crud2022/absen.php">Absen Siswa</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/PKL/september2022/web%20sekolah/index.html">Logout</a>
                     </li>
                 </ul>
